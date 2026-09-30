@@ -1,150 +1,221 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
-}
-
 .main {
-  display: flex;
-  flex: 1;
+  /* 화면이 엄청 넓어져도 내용이 끝없이 퍼지지 않게 최대 1200px까지만 사용 + 가운데 정렬 */
   width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* padding: 64px 32px 0; 위64px 좌우32px 아래0 */
+  padding: 0 32px;
 }
 
-.intro {
+.hero { /* 영역 전체 + 자식들을 어디에 배치할지 담당 */
+  min-height: 300px;
+
+  background-image: url("/hero-bg.png");
+  background-size: cover; /*Hero 영역을 빈 공간 없이 이미지로 꽉 채워줘*/
+  background-position: center; /*이미지가 잘릴 경우 이미지 중앙을 기준으로 보여줘*/
+
+  /* 문구를 이미지 가운데에 배치 */
+  display: flex; /* .hero안에 자식들을 flex방식으로 배치하겠다는 의미 */
+  flex-direction: column; /*기본flex=자식 가로배치 column->세로배치*/
+  align-items: center; /* 가로 방향에서 가운데 정렬 */
+  justify-content: center; /* 세로 방향에서 가운데 정렬 */ 
+
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.hero h1 { /* 자기 자신의 모양 담당 */
+  margin: 0 0 12px;
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.hero p { /* 자기 자신의 모양 담당 */
+  margin: 0;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.searchBox {
+  width: 80%;
+  max-width: 800px;
+  height: 56px;
+  margin-top: 32px;
+  padding: 0 20px;
+
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  gap: 12px;
+
+  background-color: white;
+  border-radius: 28px; /* 모서리 둥글게 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.searchIcon {
+  font-size: 22px;
+  color: #6b7280;
+}
+
+.searchBox input {
+  flex: 1; /* 검색 아이콘이 차지하고 남은 공간을 input이 전부 사용하게 하는 것 */
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.searchButton {
+  height: 40px;
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 20px;
+
+  background-color: #5B8DB8;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer; /* 버튼 위에 마우스를 올렸을때 커서를 손모양으로 변경 */
+}
+
+.searchButton:hover { /* 마우스 올렸을때만 적용되는 css */
+  background-color: #4A7DA8;
+}
+
+.filters {
+  /*자식 버튼들 가로로 배치*/
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 0 24px; /*= 위 좌우 아래 // padding: 위 오른쪽 아래 왼쪽*/
+}
+
+.filterButton {
+  min-width: 180px;
+  height: 44px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.filterButton span:last-child { 
+  margin-left: auto; /*auto가 왼쪽의 남는 공간 전부 차지*/
+}
+
+.resetButton { /*필터초기화 버튼만 오른쪽 끝으로 보내고 싶어서 지정*/
+  margin-left: auto; /*auto가 왼쪽의 남는 공간 전부 차지*/
+
+  border: none;
+  background: none;
+
+  font-size: 14px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.resetButton:hover {
+  color: #5B8DB8;
+}
+
+.destinationSection {
+  padding: 40px 0 60px;
+}
+
+.sectionHeader {
+  display: flex; /* h2와 p를 가로로 배치 */
+  align-items: baseline; /*두 글자의 글자 기준선 맞춰줌*/
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sectionHeader h2 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  color: #111827;
+}
+
+.sectionHeader p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.destinationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /*가로 공간을 똑같이 3등분해서 카드가 한 줄에 3개 들어가게 해줘*/
   gap: 24px;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
+.card {
+  overflow: hidden; /*카드 이미지 카드의 둥근 모서리 밖으로 빠져나오지X 잘라주는 역할*/
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: white;
 }
 
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
+.cardImage {
   width: 100%;
-  max-width: 440px;
-  gap: 16px;
+  height: 200px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #eef3f7;
+  color: #9ca3af;
   font-size: 14px;
 }
 
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
+.cardImage img {
+  width: 100%; /*부모 너비에 맞춤*/
+  height: 100%; /*부모 높이에 맞춤*/
+  object-fit: cover; /*비율 유지하면서 영역을 꽉 채움*/
+}
+
+.cardContent {
+  padding: 18px;
+}
+
+.cardContent h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #111827;
+}
+
+.cardContent p {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.saveButton {
+  display: block;
+  margin-left: auto;
+  padding: 8px 14px;
+
+  border: 1px solid #5B8DB8;
+  border-radius: 8px;
+  background-color: white;
+
+  color: #5B8DB8;
+  font-size: 13px;
   cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
-}
-
-a.secondary {
-  border-color: var(--button-secondary-border);
-}
-
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-}
-
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
-}
-
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+.saveButton:hover {
+  background-color: #f0f6fa;
 }

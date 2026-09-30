@@ -1,0 +1,81 @@
+.header {
+  width: 100%;
+  height: 72px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+.inner {
+  max-width: 1200px; /* 웹만들때 자주 보임 - 내용영역 최대 커짐 */
+  height: 100%;
+  margin: 0 auto; /* 웹만들때 자주 보임 - 가운데정렬 */
+  padding: 0 32px;
+  
+  display: flex; /* 가로로 배치됨 */
+  align-items: center; /* 가로로 배치됨 */
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: 40px;
+  margin-left: 80px;
+}
+
+.nav a {
+  color: #374151;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.language {
+  position: relative;
+  margin-left: auto;
+}
+
+.languageButton {
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.languageMenu {
+  position: absolute;
+  top: 40px;
+  /* right: 0; */
+
+  left: 50%; /* 기준점까지 이동 */
+  transform: translateX(-50%); /* 내 몸의 절반만큼 뒤로 이동 */
+
+  width: 150px;
+  padding: 8px;
+
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.languageMenu button {
+  width: 100%;
+  padding: 10px 12px;
+
+  border: none;
+  background: none;
+
+  text-align: center;
+  cursor: pointer;
+}
+
+.languageMenu button:hover {
+  background-color: #f3f4f6;
+}

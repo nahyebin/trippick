@@ -1,0 +1,62 @@
+.footer { /* footer 전체 배경 + 위쪽 경계선 */
+    width: 100%;
+    margin-top: 80px;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.inner { /* 내용이 너무 넓어지지 않도록 최대 1200px */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px 28px;
+}
+
+.info { /* 서비스 소개 */
+    margin-bottom: 24px;
+}
+
+.logo {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.description {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.nav { 
+    display: flex; /* 메뉴들을 가로로 배치 */
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.nav a {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+.bottom {
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+
+    /* 문장 2개 양쪽으로 벌어지게! */
+    display: flex; 
+    justify-content: space-between;
+
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.bottom p {
+    margin: 0;
+}
