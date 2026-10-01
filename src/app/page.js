@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { getAreaCodes, getTouristSpots, searchTouristSpots } from "@/api/api";
 import { useFilterStore } from "@/store/filterStore";
+import Link from "next/link";
 
 const TOUR_TYPES = [
   { id: "12", name: "관광지" },
@@ -334,18 +335,23 @@ export default function Home() {
 
             touristSpots.map((spot) => (
               <article key={spot.contentid} className={styles.card} >
-                <div className={styles.cardImage}>
-                  <img src={spot.firstimage ? spot.firstimage : "/no-image.png"} alt={spot.title} />
-                </div>
+                <Link
+                  href={`/tourist/${spot.contentid}`}
+                  className={styles.cardLink}
+                >
+                  <div className={styles.cardImage}>
+                    <img src={spot.firstimage ? spot.firstimage : "/no-image.png"} alt={spot.title} />
+                  </div>
 
-                <div className={styles.cardContent}>
-                  <h3>{spot.title}</h3>
-                  <p>📍 {spot.addr1}</p>
+                  <div className={styles.cardContent}>
+                    <h3>{spot.title}</h3>
+                    <p>📍 {spot.addr1}</p>
+                  </div>
+                </Link>
 
-                  <button className={styles.saveButton}>
-                    ♥️ 저장
-                  </button>
-                </div>
+                <button className={styles.saveButton}>
+                  ♥️ 저장
+                </button>
               </article>
             ))
           )}

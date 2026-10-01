@@ -85,3 +85,22 @@ export async function getAreaCodes() {
     return data;
 
 }
+
+export async function getTouristDetail(contentId) {
+    const params = new URLSearchParams({
+        serviceKey: SERVICE_KEY,
+        MobileOS: "ETC",
+        MobileApp: "TripPick",
+        _type: "json",
+        contentId: contentId,
+    });
+
+    const url = `${BASE_URL}/detailCommon2?${params.toString()}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    console.log("상세 API 응답:", data); 
+
+    return data;
+}

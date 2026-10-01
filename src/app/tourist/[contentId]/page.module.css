@@ -1,0 +1,58 @@
+.main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+}
+
+.detailContainer {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.detailImage {
+    display: block;
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 16px;
+    background-color: #eef3f7;
+}
+
+.detailContent {
+    padding: 32px 4px;
+}
+
+.detailContent h1 {
+    margin: 0 0 14px;
+    font-size: 32px;
+    color: #111827;
+}
+
+.address {
+    margin-bottom: 28px;
+    font-size: 15px;
+    color: #6b7280;
+}
+
+.overview {
+    margin-bottom: 32px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #374151;
+}
+
+.saveButton {
+    padding: 10px 20px;
+    border: 1px solid #5B8DB8;
+    border-radius: 8px;
+    background-color: white;
+    color: #5B8DB8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.saveButton:hover {
+    background-color: #f0f6fa;
+}
