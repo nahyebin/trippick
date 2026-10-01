@@ -1,12 +1,12 @@
 const SERVICE_KEY = process.env.NEXT_PUBLIC_TOUR_API_KEY;
 const BASE_URL = "https://apis.data.go.kr/B551011/KorService2";
 
-export async function getTouristSpots() {
+export async function getTouristSpots(pageNo, numOfRows) {
 
     const params = new URLSearchParams({
         serviceKey: SERVICE_KEY,
-        pageNo: "1",
-        numOfRows: "3",
+        pageNo: pageNo,
+        numOfRows: numOfRows,
         MobileOS: "ETC",
         MobileApp: "TripPick",
         _type: "json",
@@ -20,5 +20,25 @@ export async function getTouristSpots() {
 
     console.log(data);
 
+    return data;
+}
+
+export async function searchTouristSpots(keyword, pageNo, numOfRows) {
+    const params = new URLSearchParams({
+        serviceKey: SERVICE_KEY,
+        keyword: keyword,
+        pageNo: pageNo,
+        numOfRows: numOfRows,
+        MobileOS: "ETC",
+        MobileApp: "TripPick",
+        _type: "json",
+        arrange: "A",
+    });
+
+    const url = `${BASE_URL}/searchKeyword2?${params.toString()}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
     return data;
 }
