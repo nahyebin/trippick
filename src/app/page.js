@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { getAreaCodes, getTouristSpots, searchTouristSpots } from "@/api/api";
+import { getAreaCodes, getTouristSpots, searchTouristSpots, saveFavorite } from "@/api/api";
 import { useFilterStore } from "@/store/filterStore";
 import Link from "next/link";
 
@@ -186,6 +186,22 @@ export default function Home() {
     setHasMore(results.length > 3);
   };
 
+  const handleSave = async (spot) => {
+    try {
+      const result = await saveFavorite(spot);
+
+      if (result.alreadySaved) {
+        alert("이미 저장된 관광지입니다!");
+        return;
+      }
+
+      alert("나의 여행 리스트에 저장했습니다!");
+    } catch (error) {
+      console.error("저장 실패:", error);
+      alert("저장에 실패했습니다.");
+    }
+  };
+
   const filterSearchResults = (area, type) => {
     let filtered = searchResults;
 
@@ -349,8 +365,11 @@ export default function Home() {
                   </div>
                 </Link>
 
-                <button className={styles.saveButton}>
-                  ♥️ 저장
+                <button
+                  className={styles.saveButton}
+                  onClick={() => handleSave(spot)}
+                >
+                  ♥ 저장
                 </button>
               </article>
             ))

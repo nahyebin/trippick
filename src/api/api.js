@@ -104,3 +104,50 @@ export async function getTouristDetail(contentId) {
 
     return data;
 }
+
+export async function saveFavorite(tourist) {
+    // 관광지 ID 가져오기
+    const contentId = tourist.contentid || tourist.contentId;
+
+    // 현재 저장된 관광지 목록 가져오기
+    const checkResponse = await fetch(
+        "http://localhost:4000/favorites"
+    );
+
+    const existingFavorites = await checkResponse.json();
+
+    // 같은 관광지가 이미 저장되어 있는지 확인
+    const alreadySaved = existingFavorites.some((favorite) => {
+        return String(favorite.contentId) === String(contentId);
+    });
+
+    // 이미 저장되어 있으면 여기서 함수 종료
+    if (alreadySaved) {
+        return { alreadySaved: true };
+    }
+
+    // 중복이 아니면 새로 저장
+    const response = await fetch(
+        "http://localhost:4000/favorites",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                contentId: contentId,
+                title: tourist.title,
+                image: tourist.firstimage || tourist.image || "",
+                addr: tourist.addr1 || tourist.addr || "",
+                status: "planned",
+            }),
+        }
+    );
+
+    const data = await response.json();
+
+    return {
+        alreadySaved: false,
+        data: data,
+    };
+}

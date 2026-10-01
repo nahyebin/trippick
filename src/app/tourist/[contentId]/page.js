@@ -3,12 +3,29 @@ import styles from "./page.module.css";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getTouristDetail } from "@/api/api";
+import { getTouristDetail, saveFavorite } from "@/api/api";
+
 
 export default function TouristDetailPage() {
     const { contentId } = useParams();
 
     const [tourist, setTourist] = useState(null);
+
+    const handleSave = async () => {
+        try {
+            const result = await saveFavorite(tourist);
+
+            if (result.alreadySaved) {
+                alert("이미 저장된 관광지입니다!");
+                return;
+            }
+
+            alert("나의 여행 리스트에 저장했습니다!");
+        } catch (error) {
+            console.error("저장 실패:", error);
+            alert("저장에 실패했습니다.");
+        }
+    };
 
     useEffect(() => {
         const fetchTouristDetail = async () => {
@@ -57,7 +74,10 @@ export default function TouristDetailPage() {
                         )}
                     </div>
 
-                    <button className={styles.saveButton}>
+                    <button
+                        className={styles.saveButton}
+                        onClick={handleSave}
+                    >
                         ♥ 저장
                     </button>
                 </div>
