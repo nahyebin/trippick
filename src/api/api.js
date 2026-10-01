@@ -100,7 +100,7 @@ export async function getTouristDetail(contentId) {
     const response = await fetch(url);
     const data = await response.json();
 
-    console.log("상세 API 응답:", data); 
+    console.log("상세 API 응답:", data);
 
     return data;
 }
@@ -150,4 +150,64 @@ export async function saveFavorite(tourist) {
         alreadySaved: false,
         data: data,
     };
+}
+
+// 저장한 관광지 목록 조회
+export async function getFavorites() {
+    const response = await fetch("http://localhost:4000/favorites");
+    const data = await response.json();
+
+    return data;
+}
+
+// 여행 상태 변경
+export async function updateFavoriteStatus(id, status) {
+    const response = await fetch(
+        `http://localhost:4000/favorites/${id}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                status: status,
+            }),
+        }
+    );
+
+    const data = await response.json();
+
+    return data;
+}
+
+
+// 저장한 관광지 삭제
+export async function deleteFavorite(id) {
+    await fetch(
+        `http://localhost:4000/favorites/${id}`,
+        {
+            method: "DELETE",
+        }
+    );
+}
+
+// 방문 메모 저장
+export async function saveMemo(contentId, memo) {
+    const response = await fetch(
+        "http://localhost:4000/memos",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                contentId: contentId,
+                memo: memo,
+            }),
+        }
+    );
+
+    const data = await response.json();
+
+    return data;
 }

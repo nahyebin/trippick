@@ -1,19 +1,11 @@
 {
   "favorites": [
     {
-      "contentId": "2750144",
-      "title": "가가상점",
-      "image": "https://tong.visitkorea.or.kr/cms/resource/48/4106048_image2_1.jpg",
-      "addr": "충청남도 공주시 감영길 3 (반죽동)",
-      "status": "planned",
-      "id": "M7DSXnrTgnU"
-    },
-    {
       "contentId": "2805408",
       "title": "가가와",
       "image": "",
       "addr": "부산광역시 부산진구  중앙번영로 (6)",
-      "status": "planned",
+      "status": "visited",
       "id": "cCg8mOkfRvE"
     },
     {
@@ -25,6 +17,12 @@
       "id": "s27XGFSblOw"
     }
   ],
-  "memos": [],
+  "memos": [
+    {
+      "contentId": "2805408",
+      "memo": "방문했다아",
+      "id": "fWYq0uMn40o"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
