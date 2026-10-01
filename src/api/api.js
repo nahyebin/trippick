@@ -1,7 +1,7 @@
 const SERVICE_KEY = process.env.NEXT_PUBLIC_TOUR_API_KEY;
 const BASE_URL = "https://apis.data.go.kr/B551011/KorService2";
 
-export async function getTouristSpots(pageNo, numOfRows, areaCode) {
+export async function getTouristSpots(pageNo, numOfRows, areaCode, contentTypeId) {
 
     const params = new URLSearchParams({
         serviceKey: SERVICE_KEY,
@@ -16,6 +16,10 @@ export async function getTouristSpots(pageNo, numOfRows, areaCode) {
     if (areaCode) {
         params.append("areaCode", areaCode);
     }
+    if (contentTypeId) {
+        params.append("contentTypeId", contentTypeId);
+    }
+
 
     const url = `${BASE_URL}/areaBasedList2?${params.toString()}`;
 
@@ -27,7 +31,15 @@ export async function getTouristSpots(pageNo, numOfRows, areaCode) {
     return data;
 }
 
-export async function searchTouristSpots(keyword, pageNo, numOfRows, areaCode) {
+export async function searchTouristSpots(keyword, pageNo, numOfRows, areaCode, contentTypeId) {
+
+    console.log("=== searchTouristSpots 함수 내부 ===");
+    console.log("keyword:", keyword);
+    console.log("pageNo:", pageNo);
+    console.log("numOfRows:", numOfRows);
+    console.log("areaCode:", areaCode);
+    console.log("contentTypeId:", contentTypeId);
+
     const params = new URLSearchParams({
         serviceKey: SERVICE_KEY,
         keyword: keyword,
@@ -42,8 +54,12 @@ export async function searchTouristSpots(keyword, pageNo, numOfRows, areaCode) {
     if (areaCode) {
         params.append("areaCode", areaCode);
     }
+    if (contentTypeId) {
+        params.append("contentTypeId", contentTypeId);
+    }
 
     const url = `${BASE_URL}/searchKeyword2?${params.toString()}`;
+    console.log("검색 API URL:", url);
 
     const response = await fetch(url);
     const data = await response.json();
