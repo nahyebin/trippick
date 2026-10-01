@@ -240,3 +240,42 @@
   background-color: #f0f6fa;
   color: #5B8DB8;
 }
+
+.filterWrapper {
+  position: relative;
+}
+
+.filterDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+
+  width: 180px;
+  max-height: 260px;
+  overflow-y: auto;
+
+  padding: 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.filterDropdown button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+
+  text-align: left;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.filterDropdown button:hover {
+  background-color: #f0f6fa;
+  color: #5B8DB8;
+}

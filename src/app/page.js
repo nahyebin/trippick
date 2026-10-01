@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { getTouristSpots, searchTouristSpots } from "@/api/api";
+import { getAreaCodes, getTouristSpots, searchTouristSpots } from "@/api/api";
+import { useFilterStore } from "@/store/filterStore";
 
 export default function Home() {
 
@@ -12,25 +13,43 @@ export default function Home() {
   const [isSearch, setIsSearch] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState(""); // 마지막으로 실제 검색한 값
   const [hasMore, setHasMore] = useState(true);
+  const [areas, setAreas] = useState([]);
+  const [isAreaOpen, setIsAreaOpen] = useState(false);
+
+  const { selectedArea, setSelectedArea } = useFilterStore();
 
   useEffect(() => {
     const fetchTouristSpots = async () => {
-      const data = await getTouristSpots(1, 3);
+      const data = await getTouristSpots(1, 3, selectedArea?.code);
 
       const { item } = data.response.body.items;
 
-      setTouristSpots(item);
+      setTouristSpots(item || []);
+      setPageNo(1);
+      setHasMore(true);
     };
     fetchTouristSpots();
-  }, []);
+  }, [selectedArea]);
+
+  useEffect(() => {
+    const fetchAreaCodes = async () => {
+      const data = await getAreaCodes();
+
+      const { item } = data.response.body.items;
+
+      setAreas(item);
+
+    }
+    fetchAreaCodes();
+  }, [])
 
   const handleLoadMore = async () => {
 
     if (isSearch) {
-      const data = await searchTouristSpots(searchedKeyword, pageNo + 1, 3);
+      const data = await searchTouristSpots(searchedKeyword, pageNo + 1, 3, selectedArea?.code);
       const { item } = data.response.body.items;
 
-      const data2 = await searchTouristSpots(searchedKeyword, pageNo + 2, 3);
+      const data2 = await searchTouristSpots(searchedKeyword, pageNo + 2, 3, selectedArea?.code);
       const { item: item2 } = data2.response.body.items;
 
       const items1 = item || [];
@@ -49,10 +68,10 @@ export default function Home() {
       setPageNo(pageNo + 2);
 
     } else {
-      const data = await getTouristSpots(pageNo + 1, 3);
+      const data = await getTouristSpots(pageNo + 1, 3, selectedArea?.code);
       const { item } = data.response.body.items;
 
-      const data2 = await getTouristSpots(pageNo + 2, 3);
+      const data2 = await getTouristSpots(pageNo + 2, 3, selectedArea?.code);
       const { item: item2 } = data2.response.body.items;
 
       const items1 = item || [];
@@ -73,7 +92,7 @@ export default function Home() {
   };
 
   const handleSearch = async () => {
-    const data = await searchTouristSpots(keyword, 1, 3);
+    const data = await searchTouristSpots(keyword, 1, 3, selectedArea?.code);
     console.log(data);
     const { item } = data.response.body.items;
 
@@ -120,11 +139,36 @@ export default function Home() {
         </div>
 
         <section className={styles.filters}>
-          <button className={styles.filterButton}>
+          <div className={styles.filterWrapper}>
+          <button onClick={() => setIsAreaOpen(!isAreaOpen)} className={styles.filterButton}>
             <span>📍</span>
-            <span>전체 지역</span>
+            <span>
+              {selectedArea ? selectedArea.name : "전체 지역"}
+            </span>
             <span>▾</span>
           </button>
+
+          {isAreaOpen && (
+            <div className={styles.filterDropdown}>
+              <button onClick={() => {
+                setSelectedArea(null);
+                setIsAreaOpen(false);
+              }}>
+                전체 지역</button>
+              {areas.map((area) => (
+                <button
+                  key={area.code}
+                  onClick={() => {
+                    setSelectedArea(area);
+                    setIsAreaOpen(false);
+                  }}>
+                  {area.name}
+                </button>
+              ))}
+
+            </div>
+          )}
+          </div>
 
           <button className={styles.filterButton}>
             <span>🏛️</span>
