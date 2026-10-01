@@ -211,3 +211,41 @@ export async function saveMemo(contentId, memo) {
 
     return data;
 }
+
+// 방문 메모 목록 조회
+export async function getMemos() {
+    const response = await fetch("http://localhost:4000/memos");
+    const data = await response.json();
+
+    return data;
+}
+
+// 방문 메모 수정
+export async function updateMemo(id, memo) {
+    const response = await fetch(
+        `http://localhost:4000/memos/${id}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                memo: memo,
+            }),
+        }
+    );
+
+    const data = await response.json();
+
+    return data;
+}
+
+// 방문 메모 삭제
+export async function deleteMemo(id) {
+    await fetch(
+        `http://localhost:4000/memos/${id}`,
+        {
+            method: "DELETE",
+        }
+    );
+}

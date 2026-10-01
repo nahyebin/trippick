@@ -2,12 +2,13 @@
 import styles from "./page.module.css";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getTouristDetail, saveFavorite } from "@/api/api";
 
 
 export default function TouristDetailPage() {
     const { contentId } = useParams();
+    const router = useRouter();
 
     const [tourist, setTourist] = useState(null);
 
@@ -47,6 +48,12 @@ export default function TouristDetailPage() {
     return (
         <main className={styles.main}>
             <div className={styles.detailContainer}>
+                <button
+                    className={styles.backButton}
+                    onClick={() => router.back()}
+                >
+                    ← 목록으로 돌아가기
+                </button>
                 <img
                     className={styles.detailImage}
                     src={tourist.firstimage || "/no-image.png"}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { getAreaCodes, getTouristSpots, searchTouristSpots, saveFavorite } from "@/api/api";
+import { getAreaCodes, getTouristSpots, searchTouristSpots, saveFavorite, getFavorites } from "@/api/api";
 import { useFilterStore } from "@/store/filterStore";
 import Link from "next/link";
 
@@ -49,6 +49,7 @@ export default function Home() {
   const [isAreaOpen, setIsAreaOpen] = useState(false);
   const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const { selectedArea, setSelectedArea } = useFilterStore();
   const { selectedType, setSelectedType } = useFilterStore();
@@ -104,6 +105,15 @@ export default function Home() {
     }
     fetchAreaCodes();
   }, [])
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const data = await getFavorites();
+      setFavorites(data);
+    };
+
+    fetchFavorites();
+  }, []);
 
   const handleLoadMore = async () => {
     if (isSearch) {
@@ -194,6 +204,11 @@ export default function Home() {
         alert("이미 저장된 관광지입니다!");
         return;
       }
+
+      setFavorites((prev) => [
+        ...prev,
+        result.data
+      ]);
 
       alert("나의 여행 리스트에 저장했습니다!");
     } catch (error) {
@@ -343,36 +358,48 @@ export default function Home() {
           </button>
         </section>
 
+
         <div className={styles.destinationGrid}>
           {touristSpots.length === 0 ? (
             <p>검색 결과가 없습니다.</p>
-
           ) : (
+            touristSpots.map((spot) => {
+              const isSaved = favorites.some(
+                (favorite) =>
+                  String(favorite.contentId) === String(spot.contentid)
+              );
 
-            touristSpots.map((spot) => (
-              <article key={spot.contentid} className={styles.card} >
-                <Link
-                  href={`/tourist/${spot.contentid}`}
-                  className={styles.cardLink}
-                >
-                  <div className={styles.cardImage}>
-                    <img src={spot.firstimage ? spot.firstimage : "/no-image.png"} alt={spot.title} />
+              return (
+                <article key={spot.contentid} className={styles.card}>
+                  <Link
+                    href={`/tourist/${spot.contentid}`}
+                    className={styles.cardLink}
+                  >
+                    <div className={styles.cardImage}>
+                      <img
+                        src={spot.firstimage ? spot.firstimage : "/no-image.png"}
+                        alt={spot.title}
+                      />
+                    </div>
+
+                    <div className={styles.cardContent}>
+                      <h3>{spot.title}</h3>
+                      <p>📍 {spot.addr1}</p>
+                    </div>
+                  </Link>
+
+                  <div className={styles.cardActions}>
+                    <button
+                      className={`${styles.saveButton} ${isSaved ? styles.savedButton : ""
+                        }`}
+                      onClick={() => handleSave(spot)}
+                    >
+                      {isSaved ? "♥️ 저장됨" : "♥️ 저장"}
+                    </button>
                   </div>
-
-                  <div className={styles.cardContent}>
-                    <h3>{spot.title}</h3>
-                    <p>📍 {spot.addr1}</p>
-                  </div>
-                </Link>
-
-                <button
-                  className={styles.saveButton}
-                  onClick={() => handleSave(spot)}
-                >
-                  ♥ 저장
-                </button>
-              </article>
-            ))
+                </article>
+              );
+            })
           )}
         </div>
 

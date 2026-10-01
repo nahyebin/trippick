@@ -208,21 +208,20 @@
 }
 
 .saveButton {
-  display: block;
-  margin-left: auto;
-  padding: 8px 14px;
-
-  border: 1px solid #5B8DB8;
-  border-radius: 8px;
-  background-color: white;
-
-  color: #5B8DB8;
-  font-size: 13px;
-  cursor: pointer;
+    padding: 8px 14px;
+    border: 1px solid #5B8DB8;
+    border-radius: 8px;
+    background-color: white;
+    color: #5B8DB8;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 .saveButton:hover {
-  background-color: #f0f6fa;
+    background-color: #5B8DB8;
+    color: white;
 }
 
 .moreButton {
@@ -283,4 +282,22 @@
 .filterDropdown button:hover {
   background-color: #f0f6fa;
   color: #5B8DB8;
+}
+
+.cardActions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 16px 16px;
+}
+
+.savedButton {
+    background-color: #eaf4fb;
+    border-color: #8bb8d8;
+    color: #4f86ad;
+}
+
+.savedButton:hover {
+    background-color: #eaf4fb;
+    border-color: #8bb8d8;
+    color: #4f86ad;
 }

@@ -2,20 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getFavorites, updateFavoriteStatus, deleteFavorite, saveMemo } from "@/api/api";
+import { getFavorites, updateFavoriteStatus, deleteFavorite, saveMemo, getMemos, updateMemo, deleteMemo } from "@/api/api";
 import styles from "./page.module.css";
 
 export default function MyTripsPage() {
     const [favorites, setFavorites] = useState([]);
+    const [memos, setMemos] = useState([]);
+    const [isMemoModalOpen, setIsMemoModalOpen] = useState(false);
+    const [memoText, setMemoText] = useState("");
+    const [selectedContentId, setSelectedContentId] = useState(null);
+    const [editingMemoId, setEditingMemoId] = useState(null);
 
     useEffect(() => {
-        const fetchFavorites = async () => {
-            const data = await getFavorites();
+        const fetchData = async () => {
+            const favoritesData = await getFavorites();
+            const memosData = await getMemos();
 
-            setFavorites(data);
+            setFavorites(favoritesData);
+            setMemos(memosData);
         };
 
-        fetchFavorites();
+        fetchData();
     }, []);
 
     // 방문 상태 변경
@@ -41,16 +48,82 @@ export default function MyTripsPage() {
         );
     };
 
-    const handleMemo = async (contentId) => {
-        const memo = prompt("방문 메모를 입력해주세요.");
+    // 메모 모달 열기
+    const handleOpenMemoModal = (contentId) => {
+        setSelectedContentId(contentId);
+        setMemoText("");
+        setEditingMemoId(null);
+        setIsMemoModalOpen(true);
+    };
 
-        if (!memo) {
+    const handleEditMemo = (memo) => {
+        setEditingMemoId(memo.id);
+        setSelectedContentId(memo.contentId);
+        setMemoText(memo.memo);
+        setIsMemoModalOpen(true);
+    };
+
+    const handleDeleteMemo = async (id) => {
+        const isConfirmed = confirm("메모를 삭제하시겠습니까?");
+
+        if (!isConfirmed) {
             return;
         }
 
-        await saveMemo(contentId, memo);
+        await deleteMemo(id);
 
-        alert("메모가 저장되었습니다!");
+        setMemos((prev) =>
+            prev.filter((memo) => memo.id !== id)
+        );
+    };
+
+
+    // 메모 모달 닫기
+    const handleCloseMemoModal = () => {
+        setIsMemoModalOpen(false);
+        setMemoText("");
+        setSelectedContentId(null);
+        setEditingMemoId(null);
+    };
+
+
+    // 메모 저장
+    const handleSaveMemo = async () => {
+        if (!memoText.trim()) {
+            alert("메모를 입력해주세요.");
+            return;
+        }
+
+        // 기존 메모 수정
+        if (editingMemoId) {
+            const updatedMemo = await updateMemo(
+                editingMemoId,
+                memoText
+            );
+
+            setMemos((prev) =>
+                prev.map((memo) =>
+                    memo.id === editingMemoId
+                        ? updatedMemo
+                        : memo
+                )
+            );
+        }
+
+        // 새 메모 추가
+        else {
+            const newMemo = await saveMemo(
+                selectedContentId,
+                memoText
+            );
+
+            setMemos((prev) => [
+                ...prev,
+                newMemo
+            ]);
+        }
+
+        handleCloseMemoModal();
     };
 
     return (
@@ -94,6 +167,43 @@ export default function MyTripsPage() {
                                 </div>
                             </Link>
 
+                            {favorite.status === "visited" && (
+                                <div className={styles.memoArea}>
+                                    {memos
+                                        .filter(
+                                            (memo) =>
+                                                String(memo.contentId) ===
+                                                String(favorite.contentId)
+                                        )
+                                        .map((memo) => (
+                                            <div
+                                                key={memo.id}
+                                                className={styles.memoItem}
+                                            >
+                                                <p className={styles.memo}>
+                                                    📝 {memo.memo}
+                                                </p>
+
+                                                <div className={styles.memoActions}>
+                                                    <button
+                                                        className={styles.editMemoButton}
+                                                        onClick={() => handleEditMemo(memo)}
+                                                    >
+                                                        수정
+                                                    </button>
+
+                                                    <button
+                                                        className={styles.deleteMemoButton}
+                                                        onClick={() => handleDeleteMemo(memo.id)}
+                                                    >
+                                                        삭제
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+                            )}
+
                             <div className={styles.cardBottom}>
                                 <select
                                     className={styles.statusSelect}
@@ -114,7 +224,7 @@ export default function MyTripsPage() {
                                         <button
                                             className={styles.memoButton}
                                             onClick={() =>
-                                                handleMemo(favorite.contentId)
+                                                handleOpenMemoModal(favorite.contentId)
                                             }
                                         >
                                             메모 추가
@@ -131,6 +241,48 @@ export default function MyTripsPage() {
                             </div>
                         </article>
                     ))}
+                </div>
+            )}
+            {isMemoModalOpen && (
+                <div
+                    className={styles.modalOverlay}
+                    onClick={handleCloseMemoModal}
+                >
+                    <div
+                        className={styles.modal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2>
+                            {editingMemoId ? "방문 메모 수정" : "방문 메모 추가"}
+                        </h2>
+
+                        <p className={styles.modalDescription}>
+                            여행에서 기억하고 싶은 내용을 남겨보세요.
+                        </p>
+
+                        <textarea
+                            className={styles.memoTextarea}
+                            placeholder="방문 후기를 입력해주세요."
+                            value={memoText}
+                            onChange={(e) => setMemoText(e.target.value)}
+                        />
+
+                        <div className={styles.modalButtons}>
+                            <button
+                                className={styles.cancelButton}
+                                onClick={handleCloseMemoModal}
+                            >
+                                취소
+                            </button>
+
+                            <button
+                                className={styles.modalSaveButton}
+                                onClick={handleSaveMemo}
+                            >
+                                {editingMemoId ? "수정" : "저장"}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </main>
