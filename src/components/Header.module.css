@@ -81,13 +81,8 @@
 }
 
 .logo {
-    display: flex;
-    align-items: center;
+    font-size: 24px;
+    color: #222;
     text-decoration: none;
-}
-
-.logoImage {
-    display: block;
-    width: 150px;
-    height: auto;
+    margin-left: 20px;
 }

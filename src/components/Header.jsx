@@ -36,11 +36,7 @@ export default function Header() {
             <div className={styles.inner}>
 
                 <Link href="/" className={styles.logo}>
-                    <img
-                        src="/header-logo.png"
-                        alt="TripPick"
-                        className={styles.logoImage}
-                    />
+                    Trip<span>Pick</span>
                 </Link>
 
                 <nav className={styles.nav}>
