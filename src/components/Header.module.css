@@ -79,3 +79,15 @@
 .languageMenu button:hover {
   background-color: #f3f4f6;
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logoImage {
+    display: block;
+    width: 150px;
+    height: auto;
+}

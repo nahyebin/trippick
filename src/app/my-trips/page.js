@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getFavorites, updateFavoriteStatus, deleteFavorite, saveMemo, getMemos, updateMemo, deleteMemo } from "@/api/api";
 import styles from "./page.module.css";
+import { translations } from "@/data/translations";
+import { useFilterStore } from "@/store/filterStore";
 
 export default function MyTripsPage() {
     const [favorites, setFavorites] = useState([]);
@@ -12,6 +14,9 @@ export default function MyTripsPage() {
     const [memoText, setMemoText] = useState("");
     const [selectedContentId, setSelectedContentId] = useState(null);
     const [editingMemoId, setEditingMemoId] = useState(null);
+
+    const { language } = useFilterStore();
+    const t = translations[language];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -64,7 +69,7 @@ export default function MyTripsPage() {
     };
 
     const handleDeleteMemo = async (id) => {
-        const isConfirmed = confirm("메모를 삭제하시겠습니까?");
+        const isConfirmed = confirm(t.memoDeleteConfirm);
 
         if (!isConfirmed) {
             return;
@@ -90,7 +95,7 @@ export default function MyTripsPage() {
     // 메모 저장
     const handleSaveMemo = async () => {
         if (!memoText.trim()) {
-            alert("메모를 입력해주세요.");
+            alert(t.memoRequired);
             return;
         }
 
@@ -129,16 +134,16 @@ export default function MyTripsPage() {
     return (
         <main className={styles.main}>
             <div className={styles.titleArea}>
-                <h1>나의 여행 리스트</h1>
-                <p>저장한 관광지를 확인하고 여행 계획을 관리해보세요.</p>
+                <h1>{t.myTripsTitle}</h1>
+<p>{t.myTripsDescription}</p>
             </div>
 
             {favorites.length === 0 ? (
                 <div className={styles.empty}>
-                    <p>아직 저장한 관광지가 없습니다.</p>
+                    <p>{t.emptyTrips}</p>
 
                     <Link href="/">
-                        관광지 둘러보기
+                        {t.exploreTrips}
                     </Link>
                 </div>
             ) : (
@@ -169,54 +174,57 @@ export default function MyTripsPage() {
 
                             {favorite.status === "visited" && (
                                 <div className={styles.memoArea}>
-                                    {memos
-                                        .filter(
-                                            (memo) =>
-                                                String(memo.contentId) ===
-                                                String(favorite.contentId)
-                                        )
-                                        .map((memo) => (
-                                            <div
-                                                key={memo.id}
-                                                className={styles.memoItem}
-                                            >
-                                                <p className={styles.memo}>
-                                                    📝 {memo.memo}
-                                                </p>
+                                    {memos.some(
+                                        (memo) =>
+                                            String(memo.contentId) === String(favorite.contentId)
+                                    ) ? (
+                                        memos
+                                            .filter(
+                                                (memo) =>
+                                                    String(memo.contentId) === String(favorite.contentId)
+                                            )
+                                            .map((memo) => (
+                                                <div key={memo.id} className={styles.memoItem}>
+                                                    <p className={styles.memo}>{memo.memo}</p>
 
-                                                <div className={styles.memoActions}>
-                                                    <button
-                                                        className={styles.editMemoButton}
-                                                        onClick={() => handleEditMemo(memo)}
-                                                    >
-                                                        수정
-                                                    </button>
+                                                    <div className={styles.memoActions}>
+                                                        <button
+                                                            className={styles.editMemoButton}
+                                                            onClick={() => handleEditMemo(memo)}
+                                                        >
+                                                            {t.edit}
+                                                        </button>
 
-                                                    <button
-                                                        className={styles.deleteMemoButton}
-                                                        onClick={() => handleDeleteMemo(memo.id)}
-                                                    >
-                                                        삭제
-                                                    </button>
+                                                        <button
+                                                            className={styles.deleteMemoButton}
+                                                            onClick={() => handleDeleteMemo(memo.id)}
+                                                        >
+                                                            {t.delete}
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))
+                                    ) : (
+                                        <p className={styles.emptyMemo}>
+                                            {t.memoGuide}
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
                             <div className={styles.cardBottom}>
                                 <select
-                                    className={styles.statusSelect}
+                                    className={`${styles.statusSelect} ${favorite.status === "visited"
+                                        ? styles.visitedStatus
+                                        : styles.plannedStatus
+                                        }`}
                                     value={favorite.status}
                                     onChange={(e) =>
-                                        handleStatusChange(
-                                            favorite.id,
-                                            e.target.value
-                                        )
+                                        handleStatusChange(favorite.id, e.target.value)
                                     }
                                 >
-                                    <option value="planned">방문 예정</option>
-                                    <option value="visited">방문 완료</option>
+                                    <option value="planned">{t.planned}</option>
+                                    <option value="visited">{t.visited}</option>
                                 </select>
 
                                 <div className={styles.cardActions}>
@@ -227,7 +235,7 @@ export default function MyTripsPage() {
                                                 handleOpenMemoModal(favorite.contentId)
                                             }
                                         >
-                                            메모 추가
+                                            {t.memoAdd}
                                         </button>
                                     )}
 
@@ -235,7 +243,7 @@ export default function MyTripsPage() {
                                         className={styles.deleteButton}
                                         onClick={() => handleDelete(favorite.id)}
                                     >
-                                        삭제
+                                        {t.delete}
                                     </button>
                                 </div>
                             </div>
@@ -253,16 +261,16 @@ export default function MyTripsPage() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h2>
-                            {editingMemoId ? "방문 메모 수정" : "방문 메모 추가"}
+                            {editingMemoId ? t.memoEditTitle : t.memoAddTitle}
                         </h2>
 
                         <p className={styles.modalDescription}>
-                            여행에서 기억하고 싶은 내용을 남겨보세요.
+                            {t.memoDescription}
                         </p>
 
                         <textarea
                             className={styles.memoTextarea}
-                            placeholder="방문 후기를 입력해주세요."
+                            placeholder={t.memoPlaceholder}
                             value={memoText}
                             onChange={(e) => setMemoText(e.target.value)}
                         />
@@ -272,14 +280,14 @@ export default function MyTripsPage() {
                                 className={styles.cancelButton}
                                 onClick={handleCloseMemoModal}
                             >
-                                취소
+                                {t.cancel}
                             </button>
 
                             <button
                                 className={styles.modalSaveButton}
                                 onClick={handleSaveMemo}
                             >
-                                {editingMemoId ? "수정" : "저장"}
+                                {editingMemoId ? t.edit : t.memoSave}
                             </button>
                         </div>
                     </div>

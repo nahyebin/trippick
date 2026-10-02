@@ -3,30 +3,19 @@ import styles from "./page.module.css";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getTouristDetail, saveFavorite } from "@/api/api";
-
+import { getTouristDetail, saveFavorite, getFavorites, deleteFavorite } from "@/api/api";
+import { translations } from "@/data/translations";
+import { useFilterStore } from "@/store/filterStore";
 
 export default function TouristDetailPage() {
     const { contentId } = useParams();
     const router = useRouter();
 
     const [tourist, setTourist] = useState(null);
+    const [favorites, setFavorites] = useState([]);
 
-    const handleSave = async () => {
-        try {
-            const result = await saveFavorite(tourist);
-
-            if (result.alreadySaved) {
-                alert("이미 저장된 관광지입니다!");
-                return;
-            }
-
-            alert("나의 여행 리스트에 저장했습니다!");
-        } catch (error) {
-            console.error("저장 실패:", error);
-            alert("저장에 실패했습니다.");
-        }
-    };
+    const { language } = useFilterStore();
+    const t = translations[language];
 
     useEffect(() => {
         const fetchTouristDetail = async () => {
@@ -41,9 +30,65 @@ export default function TouristDetailPage() {
         fetchTouristDetail();
     }, [contentId]);
 
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            const data = await getFavorites();
+            setFavorites(data);
+        };
+
+        fetchFavorites();
+    }, []);
+
+
+
+
+    const handleSave = async () => {
+        try {
+            const savedFavorite = favorites.find(
+                (favorite) =>
+                    String(favorite.contentId) ===
+                    String(tourist.contentid)
+            );
+
+            // 이미 저장되어 있으면 → 저장 취소
+            if (savedFavorite) {
+                await deleteFavorite(savedFavorite.id);
+
+                setFavorites((prev) =>
+                    prev.filter(
+                        (favorite) =>
+                            favorite.id !== savedFavorite.id
+                    )
+                );
+
+                return;
+            }
+
+            // 저장되어 있지 않으면 → 저장
+            const result = await saveFavorite(tourist);
+
+            setFavorites((prev) => [
+                ...prev,
+                result.data
+            ]);
+
+        } catch (error) {
+            console.error("저장 처리 실패:", error);
+            alert("저장 처리에 실패했습니다.");
+        }
+    };
+
     if (!tourist) {
-        return <p>관광지 정보를 불러오는 중입니다...</p>;
+        return <p>{t.loading}</p>;
     }
+
+
+
+    const isSaved = favorites.some(
+        (favorite) =>
+            String(favorite.contentId) ===
+            String(tourist.contentid)
+    );
 
     return (
         <main className={styles.main}>
@@ -52,16 +97,16 @@ export default function TouristDetailPage() {
                     className={styles.backButton}
                     onClick={() => router.back()}
                 >
-                    ← 목록으로 돌아가기
+                    {t.back}
                 </button>
                 <img
                     className={styles.detailImage}
                     src={tourist.firstimage || "/no-image.png"}
-                    alt={tourist.title || "관광지 이미지"}
+                    alt={tourist.title || t.touristImage}
                 />
 
                 <div className={styles.detailContent}>
-                    <h1>{tourist.title || "관광지 정보"}</h1>
+                    <h1>{tourist.title || t.touristInfo}</h1>
 
                     {tourist.addr1 && (
                         <p className={styles.address}>
@@ -77,15 +122,16 @@ export default function TouristDetailPage() {
                                 }}
                             />
                         ) : (
-                            <p>등록된 소개 정보가 없습니다.</p>
+                            <p>{t.noOverview}</p>
                         )}
                     </div>
 
                     <button
-                        className={styles.saveButton}
+                        className={`${styles.saveButton} ${isSaved ? styles.savedButton : ""
+                            }`}
                         onClick={handleSave}
                     >
-                        ♥ 저장
+                        {isSaved ? t.saved : t.save}
                     </button>
                 </div>
             </div>

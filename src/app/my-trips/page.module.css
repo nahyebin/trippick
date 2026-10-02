@@ -105,28 +105,57 @@
 }
 
 .statusSelect {
-    padding: 7px 10px;
-    border: 1px solid #d1d5db;
+    padding: 8px 14px;
     border-radius: 8px;
-    background-color: white;
-    color: #374151;
     font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* 방문 예정 */
+.plannedStatus {
+    border: 1px solid #8bb8d8;
+    background-color: #eaf4fb;
+    color: #4f86ad;
+}
+
+.plannedStatus:hover {
+    background-color: #deedf7;
+}
+
+/* 방문 완료 */
+.visitedStatus {
+    border: 1px solid #b9ddca;
+    background-color: #eef8f2;
+    color: #4f8b69;
+}
+
+.visitedStatus:hover {
+    background-color: #e2f2e9;
+}
+
+.statusSelect:hover {
+    filter: brightness(0.97);
 }
 
 .deleteButton {
-    padding: 7px 12px;
-    border: 1px solid #e5e7eb;
+    padding: 8px 14px;
+    border: 1px solid #f1b8b8;
     border-radius: 8px;
-    background-color: white;
-    color: #6b7280;
+    background-color: #fff1f1;
+    color: #d66b6b;
     font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .deleteButton:hover {
-    background-color: #f9fafb;
-    color: #ef4444;
+    background-color: #fde2e2;
+    border-color: #e99a9a;
+    color: #c95656;
 }
 
 .cardActions {
@@ -299,4 +328,11 @@
 
 .deleteMemoButton:hover {
     color: #ef4444;
+}
+
+.emptyMemo {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.5;
 }

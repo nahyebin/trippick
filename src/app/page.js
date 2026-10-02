@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { getAreaCodes, getTouristSpots, searchTouristSpots, saveFavorite, getFavorites } from "@/api/api";
+import { getAreaCodes, getTouristSpots, searchTouristSpots, saveFavorite, getFavorites, deleteFavorite } from "@/api/api";
 import { useFilterStore } from "@/store/filterStore";
 import Link from "next/link";
+import { translations } from "@/data/translations";
 
 const TOUR_TYPES = [
   { id: "12", name: "관광지" },
@@ -53,6 +54,8 @@ export default function Home() {
 
   const { selectedArea, setSelectedArea } = useFilterStore();
   const { selectedType, setSelectedType } = useFilterStore();
+  const { language } = useFilterStore();
+  const t = translations[language];
 
   useEffect(() => {
     const fetchTouristSpots = async () => {
@@ -198,22 +201,35 @@ export default function Home() {
 
   const handleSave = async (spot) => {
     try {
-      const result = await saveFavorite(spot);
+      const savedFavorite = favorites.find(
+        (favorite) =>
+          String(favorite.contentId) === String(spot.contentid)
+      );
 
-      if (result.alreadySaved) {
-        alert("이미 저장된 관광지입니다!");
+      // 이미 저장되어 있으면 → 삭제
+      if (savedFavorite) {
+        await deleteFavorite(savedFavorite.id);
+
+        setFavorites((prev) =>
+          prev.filter(
+            (favorite) => favorite.id !== savedFavorite.id
+          )
+        );
+
         return;
       }
+
+      // 저장되어 있지 않으면 → 저장
+      const result = await saveFavorite(spot);
 
       setFavorites((prev) => [
         ...prev,
         result.data
       ]);
 
-      alert("나의 여행 리스트에 저장했습니다!");
     } catch (error) {
-      console.error("저장 실패:", error);
-      alert("저장에 실패했습니다.");
+      console.error("저장 처리 실패:", error);
+      alert("저장 처리에 실패했습니다.");
     }
   };
 
@@ -255,8 +271,8 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <section className={styles.hero}>
-        <h1>지금, 한국을 여행해보세요</h1>
-        <p>가고 싶은 여행지를 찾아 나만의 여행 리스트를 만들어보세요.</p>
+        <h1>{t.heroTitle}</h1>
+        <p>{t.heroDescription}</p>
 
         <form
           className={styles.searchBox}
@@ -268,21 +284,27 @@ export default function Home() {
           <span className={styles.searchIcon}>🔎</span>
           <input
             type="text"
-            placeholder="관광지역을 검색해보세요."
+            placeholder={t.searchPlaceholder}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
-          <button type="submit" className={styles.searchButton}>검색</button>
+
+          <button type="submit" className={styles.searchButton}>
+            {t.search}
+          </button>
         </form>
       </section>
 
       <section className={styles.destinationSection}>
         <div className={styles.sectionHeader}>
           <h2>
-            {isSearch ? `"${searchedKeyword}" 검색 결과` : "관광지 둘러보기"}
+            {isSearch
+              ? `"${searchedKeyword}" ${t.searchResult}`
+              : t.exploreTitle}
           </h2>
+
           <p>
-            {!isSearch && "한국의 다양한 관광지를 만나보세요."}
+            {!isSearch && t.exploreDescription}
           </p>
         </div>
 
@@ -291,7 +313,7 @@ export default function Home() {
             <button onClick={() => setIsAreaOpen(!isAreaOpen)} className={styles.filterButton}>
               <span>📍</span>
               <span>
-                {selectedArea ? selectedArea.name : "전체 지역"}
+                {selectedArea ? selectedArea.name : t.allAreas}
               </span>
               <span>▾</span>
             </button>
@@ -302,7 +324,7 @@ export default function Home() {
                   setSelectedArea(null);
                   setIsAreaOpen(false);
                 }}>
-                  전체 지역</button>
+                  {t.allAreas}</button>
                 {areas.map((area) => (
                   <button
                     key={area.code}
@@ -322,7 +344,7 @@ export default function Home() {
             <button onClick={() => setIsTypeOpen(!isTypeOpen)} className={styles.filterButton}>
               <span>🏛️</span>
               <span>
-                {selectedType ? selectedType.name : "전체 관광 유형"}
+                {selectedType ? selectedType.name : t.allTypes}
               </span>
               <span>▾</span>
             </button>
@@ -333,7 +355,7 @@ export default function Home() {
                   setSelectedType(null);
                   setIsTypeOpen(false);
                 }}>
-                  전체 관광 유형
+                  {t.allTypes}
                 </button>
                 {TOUR_TYPES.map((type) => (
                   <button
@@ -354,14 +376,14 @@ export default function Home() {
             className={styles.resetButton}
             onClick={handleResetFilters}
           >
-            ↻ 필터 초기화
+            ↻ {t.reset}
           </button>
         </section>
 
 
         <div className={styles.destinationGrid}>
           {touristSpots.length === 0 ? (
-            <p>검색 결과가 없습니다.</p>
+            <p>{t.noResults}</p>
           ) : (
             touristSpots.map((spot) => {
               const isSaved = favorites.some(
@@ -394,7 +416,7 @@ export default function Home() {
                         }`}
                       onClick={() => handleSave(spot)}
                     >
-                      {isSaved ? "♥️ 저장됨" : "♥️ 저장"}
+                      {isSaved ? t.saved : t.save}
                     </button>
                   </div>
                 </article>
@@ -405,7 +427,7 @@ export default function Home() {
 
         {hasMore && touristSpots.length > 0 && (
           <button onClick={handleLoadMore} className={styles.moreButton}>
-            관광지 더 둘러보기
+            {t.loadMore}
           </button>
         )}
       </section>
