@@ -336,3 +336,21 @@
     font-size: 13px;
     line-height: 1.5;
 }
+
+.modalDeleteButton {
+    padding: 10px 18px;
+    border: 1px solid #f1b8b8;
+    border-radius: 8px;
+    background-color: #fff1f1;
+    color: #d66b6b;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modalDeleteButton:hover {
+    background-color: #fde2e2;
+    border-color: #e99a9a;
+    color: #c95656;
+}

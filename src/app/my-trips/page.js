@@ -14,6 +14,8 @@ export default function MyTripsPage() {
     const [memoText, setMemoText] = useState("");
     const [selectedContentId, setSelectedContentId] = useState(null);
     const [editingMemoId, setEditingMemoId] = useState(null);
+    const [deleteMemoId, setDeleteMemoId] = useState(null);
+    const [deleteFavoriteId, setDeleteFavoriteId] = useState(null);
 
     const { language } = useFilterStore();
     const t = translations[language];
@@ -45,12 +47,20 @@ export default function MyTripsPage() {
 
 
     // 저장한 관광지 삭제
-    const handleDelete = async (id) => {
-        await deleteFavorite(id);
+    const handleDelete = (id) => {
+        setDeleteFavoriteId(id);
+    };
+
+    const handleConfirmDeleteFavorite = async () => {
+        await deleteFavorite(deleteFavoriteId);
 
         setFavorites((prev) =>
-            prev.filter((favorite) => favorite.id !== id)
+            prev.filter(
+                (favorite) => favorite.id !== deleteFavoriteId
+            )
         );
+
+        setDeleteFavoriteId(null);
     };
 
     // 메모 모달 열기
@@ -68,18 +78,18 @@ export default function MyTripsPage() {
         setIsMemoModalOpen(true);
     };
 
-    const handleDeleteMemo = async (id) => {
-        const isConfirmed = confirm(t.memoDeleteConfirm);
+    const handleDeleteMemo = (id) => {
+        setDeleteMemoId(id);
+    };
 
-        if (!isConfirmed) {
-            return;
-        }
-
-        await deleteMemo(id);
+    const handleConfirmDeleteMemo = async () => {
+        await deleteMemo(deleteMemoId);
 
         setMemos((prev) =>
-            prev.filter((memo) => memo.id !== id)
+            prev.filter((memo) => memo.id !== deleteMemoId)
         );
+
+        setDeleteMemoId(null);
     };
 
 
@@ -135,7 +145,7 @@ export default function MyTripsPage() {
         <main className={styles.main}>
             <div className={styles.titleArea}>
                 <h1>{t.myTripsTitle}</h1>
-<p>{t.myTripsDescription}</p>
+                <p>{t.myTripsDescription}</p>
             </div>
 
             {favorites.length === 0 ? (
@@ -288,6 +298,74 @@ export default function MyTripsPage() {
                                 onClick={handleSaveMemo}
                             >
                                 {editingMemoId ? t.edit : t.memoSave}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* 메모 삭제 확인 모달 */}
+            {deleteMemoId !== null && (
+                <div
+                    className={styles.modalOverlay}
+                    onClick={() => setDeleteMemoId(null)}
+                >
+                    <div
+                        className={styles.modal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2>{t.memoDeleteTitle}</h2>
+
+                        <p className={styles.modalDescription}>
+                            {t.memoDeleteDescription}
+                        </p>
+
+                        <div className={styles.modalButtons}>
+                            <button
+                                className={styles.cancelButton}
+                                onClick={() => setDeleteMemoId(null)}
+                            >
+                                {t.cancel}
+                            </button>
+
+                            <button
+                                className={styles.modalDeleteButton}
+                                onClick={handleConfirmDeleteMemo}
+                            >
+                                {t.delete}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* 여행지 삭제 확인 모달 */}
+            {deleteFavoriteId !== null && (
+                <div
+                    className={styles.modalOverlay}
+                    onClick={() => setDeleteFavoriteId(null)}
+                >
+                    <div
+                        className={styles.modal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2>{t.favoriteDeleteTitle}</h2>
+
+                        <p className={styles.modalDescription}>
+                            {t.favoriteDeleteDescription}
+                        </p>
+
+                        <div className={styles.modalButtons}>
+                            <button
+                                className={styles.cancelButton}
+                                onClick={() => setDeleteFavoriteId(null)}
+                            >
+                                {t.cancel}
+                            </button>
+
+                            <button
+                                className={styles.modalDeleteButton}
+                                onClick={handleConfirmDeleteFavorite}
+                            >
+                                {t.delete}
                             </button>
                         </div>
                     </div>

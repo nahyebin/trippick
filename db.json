@@ -1,11 +1,5 @@
 {
   "favorites": [],
-  "memos": [
-    {
-      "contentId": "2805408",
-      "memo": "방문했다아",
-      "id": "fWYq0uMn40o"
-    }
-  ],
+  "memos": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

@@ -10,7 +10,7 @@ export const translations = {
         saved: "♥️ 저장됨",
         back: "← 목록으로 돌아가기",
 
-        myTripsTitle: "나의 여행 리스트",
+        myTripsTitle: "내 여행 리스트",
         planned: "방문 예정",
         visited: "방문 완료",
         memoAdd: "메모 추가",
@@ -45,6 +45,10 @@ export const translations = {
         memoDeleteConfirm: "메모를 삭제하시겠습니까?",
         memoRequired: "메모를 입력해주세요.",
         memoSave: "저장",
+        memoDeleteTitle: "메모 삭제",
+        memoDeleteDescription: "작성한 메모를 삭제하시겠습니까?",
+        favoriteDeleteTitle: "여행지 삭제",
+        favoriteDeleteDescription: "이 관광지를 여행 리스트에서 삭제하시겠습니까?",
     },
 
     EN: {
@@ -93,6 +97,10 @@ export const translations = {
         memoDeleteConfirm: "Delete this memo?",
         memoRequired: "Please enter a memo.",
         memoSave: "Save",
+        memoDeleteTitle: "Delete Memo",
+        memoDeleteDescription: "Are you sure you want to delete this memo?",
+        favoriteDeleteTitle: "Remove Destination",
+        favoriteDeleteDescription: "Remove this destination from your travel list?",
     },
 
     JA: {
@@ -141,6 +149,10 @@ export const translations = {
         memoDeleteConfirm: "このメモを削除しますか？",
         memoRequired: "メモを入力してください。",
         memoSave: "保存",
+        memoDeleteTitle: "メモを削除",
+        memoDeleteDescription: "このメモを削除しますか？",
+        favoriteDeleteTitle: "観光地を削除",
+        favoriteDeleteDescription: "この観光地を旅行リストから削除しますか？",
     },
 
     ZH: {
@@ -189,5 +201,9 @@ export const translations = {
         memoDeleteConfirm: "确定要删除这条备注吗？",
         memoRequired: "请输入备注。",
         memoSave: "保存",
+        memoDeleteTitle: "删除备注",
+        memoDeleteDescription: "确定要删除这条备注吗？",
+        favoriteDeleteTitle: "删除景点",
+        favoriteDeleteDescription: "确定要从旅行清单中删除这个景点吗？",
     },
 };
