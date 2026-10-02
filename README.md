@@ -1,4 +1,8 @@
-# TripPick
+<div align="center">
+  <img src="./docs/logo.png" alt="TripPick Logo" width="500" />
+</div>
+
+<br>
 
 한국의 관광지를 검색하고, 관심 있는 관광지를 저장하여 나만의 여행 리스트를 만들 수 있는 Next.js 기반 개인 프로젝트입니다.
 
